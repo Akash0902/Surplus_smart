@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Receiver - Food Donations</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      background: linear-gradient(rgba(47, 37, 37, 0.7), rgba(38, 31, 31, 0.7)),
+      url("static/images/receiver.webp");
+      background-size: cover;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+    }
+    .navbar {
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.3);
+    }
+    .glass-card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  color: #fff;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  transition: transform 0.3s ease-in-out;
+}
+.glass-card:hover {
+  transform: scale(1.03);
+}
+
+    .btn-custom {
+      background: #ff5e62;
+      border: none;
+      border-radius: 20px;
+      transition: 0.3s;
+    }
+    .btn-custom:hover {
+      background: #ff9966;
+      box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
+    }
+    .cart-sidebar {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      transition: right 0.3s;
+      color: white;
+    }
+    .cart-sidebar.active {
+      right: 0;
+    }
+    .section {
+      display: none;
+    }
+    .active {
+      display: block;
+    }
+    .search-bar {
+      margin: 20px auto;
+      width: 50%;
+      display: flex;
+      justify-content: center;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">SurplusSmart</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('donations')">Available Donations</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('orders'); loadOrders()">My Orders</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('profile')">My Profile</a></li>
+        <li class="nav-item">
+          <button class="btn btn-danger ms-2" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Available Donations Section -->
+<div class="container section active" id="donations">
+  <h2 class="text-center mt-5">🍽️ Find the Perfect Food Donation</h2>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search for food..." onkeyup="searchDonations()">
+  </div>
+
+  <div class="row mt-4" id="donationList">
+    {% for prediction in predictions %}
+      <div class="col-md-4 mb-4 donation-item" data-name="{{ prediction.food_name | lower }}">
+        <div class="glass-card p-3">
+          <img src="data:image/png;base64,{{ prediction.image }}" alt="{{ prediction.food_name }}" class="img-fluid rounded">
+          <h5 class="mt-3 text-white">{{ prediction.food_name }}</h5>
+          <p>
+            <strong>Donated Food:</strong> {{ prediction.predicted_food }} <br>
+            <strong>Quantity:</strong> {{ prediction.quantity }} kg <br>
+            <strong>Date:</strong> {{ prediction.date }} <br>
+            <strong>Nutrients:</strong> {{ prediction.nutrients }} <br>
+            <strong>Suitable Age Group:</strong>{{ prediction.age_group }}<br>
+            <strong>Donor Name:</strong> {{ prediction.donor_name }} <br>
+            <strong>Donor Address:</strong> {{ prediction.donor_address }} <br>
+          </p>
+          <button class="btn btn-custom" onclick="addToCart('{{ prediction.id }}', '{{ prediction.food_name }}', '{{ prediction.quantity }}', 'data:image/png;base64,{{ prediction.image }}')">
+            <i class="fas fa-cart-plus"></i> Add to Cart
+          </button>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+ <!-- My Orders Section -->
+<div class="container section" id="orders">
+  <h2 class="text-center my-4">My Orders</h2>
+  <div id="orderList" class="row">
+    <!-- Order cards will be inserted here by JS -->
+  </div>
+</div>
+
+
+<!-- Profile Section -->
+<div class="container section" id="profile">
+  <h2 class="text-center mt-5">🙍‍♂️ My Profile</h2>
+  <div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+      <div class="glass-card p-4 text-center">
+        <i class="fas fa-user-circle fa-4x mb-3"></i>
+        <h4 class="text-white">Receiver Name</h4>
+        <p>
+            <strong>Name:</strong> {{ user.name }} <br>
+            <strong>Email:</strong> {{ user.email }} <br>
+            <strong>Phone:</strong> {{ user.phone }} <br>
+            <strong>Address:</strong> {{ user.address }} <br>
+
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cart Sidebar -->
+<div class="cart-sidebar" id="cartSidebar">
+  <h4>Cart</h4>
+  <ul id="cartList"></ul>
+  <button class="btn btn-success" onclick="completeOrder()">Checkout</button>
+  <button class="btn btn-danger" onclick="toggleCart()">Close</button>
+</div>
+
+<footer class="text-center mt-5">
+  <p>&copy; 2025 SurplusSmart. All rights reserved.</p>
+</footer>
+
+<script>
+  let cart = [];
+  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+  function logout() {
+    window.location.href = "/";
+  }
+
+  function showSection(sectionId) {
+    document.querySelectorAll(".section").forEach(section => section.classList.remove("active"));
+    document.getElementById(sectionId).classList.add("active");
+  }
+
+  function addToCart(id, name, quantity, image) {
+    cart.push({ id, name, quantity, image });
+    updateCart();
+    toggleCart();
+  }
+
+  function updateCart() {
+    let cartList = document.getElementById("cartList");
+    cartList.innerHTML = "";
+    cart.forEach(item => {
+      cartList.innerHTML += `<li>${item.name} - ${item.quantity} kg</li>`;
+    });
+  }
+
+  function toggleCart() {
+    document.getElementById("cartSidebar").classList.toggle("active");
+  }
+
+  function completeOrder() {
+  if (cart.length === 0) {
+    alert("Your cart is empty! Please add some items before checkout.");
+    return;
+  }
+
+  fetch(window.location.href, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      cart: cart,
+      user_id: "{{ user.id }}"
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        alert("Order placed successfully! 🎉");
+        orders = [...orders, ...cart];
+        localStorage.setItem("orders", JSON.stringify(orders));
+        cart = [];
+        updateCart();
+        toggleCart();
+      } else {
+        alert("Failed to save order.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Error placing order.");
+    });
+}
+
+
+  function loadOrders() {
+    let ordersList = document.getElementById("ordersList");
+    ordersList.innerHTML = "";
+    let savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+    if (savedOrders.length === 0) {
+      ordersList.innerHTML = "<p class='text-center'>No orders placed yet.</p>";
+      return;
+    }
+    savedOrders.forEach(order => {
+      let orderCard = `
+        <div class="col-md-4 mb-4">
+          <div class="glass-card p-3">
+            <h5 class="mt-3 text-white">${order.name}</h5>
+            <img src="${order.image}" alt="${order.name}" class="img-fluid rounded">
+            <p><strong>Quantity:</strong> ${order.quantity} kg</p>
+          </div>
+        </div>
+      `;
+      ordersList.innerHTML += orderCard;
+    });
+  }
+
+  function loadOrderHistory() {
+    let orderHistoryList = document.getElementById("orderHistoryList");
+    let savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+    if (savedOrders.length === 0) {
+      orderHistoryList.innerHTML = "<p class='text-center'>No past orders found.</p>";
+      return;
+    }
+    orderHistoryList.innerHTML = "";
+    savedOrders.forEach(order => {
+      let card = `
+        <div class="col-md-4 mb-4">
+          <div class="glass-card p-3">
+            <h5 class="mt-3 text-white">${order.name}</h5>
+            <img src="${order.image}" alt="${order.name}" class="img-fluid rounded">
+            <p><strong>Quantity:</strong> ${order.quantity} kg</p>
+            <p><i class="fas fa-check-circle text-success"></i> Fulfilled</p>
+          </div>
+        </div>
+      `;
+      orderHistoryList.innerHTML += card;
+    });
+  }
+
+  function searchDonations() {
+    let searchInput = document.getElementById("searchInput").value.toLowerCase();
+    document.querySelectorAll(".donation-item").forEach(item => {
+      item.style.display = item.getAttribute("data-name").includes(searchInput) ? "block" : "none";
+    });
+  }
+
+  const allPredictions = {{ predictions|tojson }};
+  const user = {{ user|tojson }};
+
+  function showSection(sectionId) {
+    document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+    document.getElementById(sectionId).classList.add("active");
+  }
+
+  function loadOrders() {
+    const container = document.getElementById("orderList");
+    container.innerHTML = ""; // Clear previous content
+
+    const userOrders = allPredictions.filter(p => p.status === "Confirmed" && p.receiver_name === user.name);
+
+    if (userOrders.length === 0) {
+      container.innerHTML = "<p class='text-center'>No orders found.</p>";
+      return;
+    }
+
+    userOrders.forEach(order => {
+      const card = document.createElement("div");
+      card.className = "col-md-4";
+      card.innerHTML = `
+        <div class="glass-card">
+          <h5>${order.food_name}</h5>
+          <p>${order.image ? `<img src="data:image/jpeg;base64,${order.image}" class="img-fluid mt-2">` : ''}</p>
+          <p><strong>Donor:</strong> ${order.donor_name}</p>
+          <p><strong>Quantity:</strong> ${order.quantity}</p>
+          <p><strong>Address:</strong> ${order.donor_address}</p>
+          <p><strong>Status:</strong> ${order.status}</p>
+          
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+</script>
+
+</body>
+</html>

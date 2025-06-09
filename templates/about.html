@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About - SurplusSmart</title>
+  <link rel="shortcut icon" href="static\images\logo2.png" type="image/x-icon" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      background-color: #f9fafb;
+      color: #111;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 30px;
+      color: rgb(29, 140, 66);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #1a1a1a;
+      font-size: 18px;
+    }
+
+    .consult-btn {
+      padding: 8px 18px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .about-section {
+      padding: 60px 40px;
+    }
+
+    .about-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    .about-text {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .about-text h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .small-heading {
+      color: #ff7a00;
+      font-weight: 900;
+      margin-bottom: 10px;
+      font-size: larger;
+    }
+
+    .about-text p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    .about-image {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .about-image img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .stat-box {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+
+    .stat-box h2 {
+      font-size: 24px;
+      color: #222;
+    }
+
+    .stat-box p {
+      font-size: 14px;
+      color: #777;
+    }
+
+    #get-involved {
+      background-color: #d7d7d0;
+      padding: 3rem 1rem;
+      text-align: center;
+    }
+
+    #get-involved h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .divider {
+      width: 60px;
+      height: 3px;
+      background-color: #ff7a00;
+      margin: 0 auto 2rem auto;
+    }
+
+    .involved-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      padding: 0 2rem;
+    }
+
+    .column {
+      flex: 1;
+      min-width: 250px;
+      max-width: 400px;
+      text-align: left;
+    }
+
+    .center-image img {
+      width: 100%;
+      height: auto;
+      border: 4px solid white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    }
+
+    h3 {
+      color: #ff7a00;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 1.5rem;
+    }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-top: 0.5rem;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: #007bff;
+    }
+
+    @media (max-width: 900px) {
+      .about-container,
+      .involved-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .column {
+        text-align: center;
+      }
+    }
+
+    /* FOOTER DESIGN */
+    .footer {
+      background-color: #323232;
+      color: white;
+      padding: 60px 20px 30px;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .logo-icon img {
+      width: 90px;
+    }
+
+    .logo-text {
+      font-size: 30px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .logo-subtext {
+      font-size: 12px;
+      margin-top: 4px;
+      color: #ccc;
+      letter-spacing: 1px;
+    }
+
+    .nav {
+      margin: 30px 0 20px;
+    }
+
+    .nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .nav a:hover {
+      text-decoration: underline;
+    }
+
+    .copyright {
+      font-size: 12px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo">SurplusSmart</div>
+    <nav class="nav-links">
+      <a href="home.html">Home</a>
+      <a href="#">How It Works</a>
+      <a href="#get-involved">Volunteer</a>
+      <a href="#">Contact</a>
+    </nav>
+    <a href="/login" class="consult-btn">Donate</a>
+  </header>
+
+  <section class="about-section">
+    <div class="about-container">
+      <div class="about-text">
+        <h1>Our Vision is to End Food Waste Through Innovation</h1>
+        <h4 class="small-heading">Our Vision</h4>
+        <p>At SurplusSmart, our mission is simple yet powerful — to revolutionize the way food surplus is managed and to significantly reduce global food wastage...</p><br><br>
+
+        <h4 class="small-heading">Our Impact</h4>
+        <p>Over 10,000 kg of food saved in pilot programs. Partnership with 20+ local NGOs and food banks. Contributing to UN Sustainable Development Goal 12.3 (Halve per capita food waste)</p><br><br>
+
+        <h4 class="small-heading">Why It Matters</h4>
+        <p>Food waste doesn’t just hurt people — it harms the planet...</p><br><br>
+
+        <h4 class="small-heading">Our Team</h4>
+        <p>We’re a passionate group of engineers, data scientists, environmentalists, and social innovators...</p>
+      </div>
+
+      <div class="about-image">
+        <img src="static\images\donor.jpg" alt="Team Working" />
+        <div class="stats-grid">
+          <div class="stat-box"><h2>1+</h2><p>Years Experience</p></div>
+          <div class="stat-box"><h2>10</h2><p>Successful Pilots</p></div>
+          <div class="stat-box"><h2>100+</h2><p>Meals Saved Daily</p></div>
+          <div class="stat-box"><h2>10K</h2><p>Beneficiaries Impacted</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="get-involved">
+    <h1>GET INVOLVED</h1>
+    <div class="divider"></div>
+    <div class="involved-container">
+      <div class="column">
+        <h3>JOIN OUR MOVEMENT</h3>
+        <p>Our app will guide you to available rescues by day, time, or location...</p>
+
+        <h3>WHY YOU SHOULD CONTRIBUTE</h3>
+        <p>A single donation can feed multiple families... Help us put that food to good use.</p>
+      </div>
+      <div class="column center-image">
+        <img src="static\images\signupimg1.png" alt="Be The Rescue" />
+      </div>
+      <div class="column">
+        <h3>HOW YOU CAN HELP</h3>
+        <p>If you're a business or household with extra food, we’ll connect you with those in need...</p><br>
+        <h3>WANT TO KNOW MORE?</h3>
+        <p>Sign up for our newsletter to keep up to date with the latest.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="logo-icon">
+        <img src="static\images\logo2.png" alt="Logo" />
+      </div>
+      <div class="logo-text">SurplusSmart</div>
+      <div class="logo-subtext">AI Powered Food Wastage Reduction</div>
+      <nav class="nav">
+        <a href="#">About</a>
+        <a href="#">How It Works</a>
+        <a href="#">Volunteer</a>
+        <a href="#">Contact</a>
+      </nav>
+      <div class="copyright">© 2024 All rights reserved.</div>
+    </div>
+  </footer>
+
+</body>
+</html>

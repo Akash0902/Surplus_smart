@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Orders - SurplusSmart</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <style>
+    body {
+      background: linear-gradient(rgba(47,37,37,0.7), rgba(38,31,31,0.7)),
+                  url("{{ url_for('static', filename='images/receiver.webp') }}");
+      background-size: cover;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+    }
+    .navbar {
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.3);
+    }
+    .glass-card {
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.2);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 1.5rem;
+    }
+    .glass-card:hover {
+      transform: scale(1.03);
+      transition: transform 0.3s;
+    }
+    .btn-custom {
+      background: #ff5e62;
+      border: none;
+      border-radius: 20px;
+    }
+    .btn-custom:hover {
+      background: #ff9966;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">SurplusSmart</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('receiver') }}">Available Donations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ url_for('my_orders') }}">My Orders</a>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-danger ms-2" onclick="location.href='{{ url_for('login') }}'">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">📦 My Orders</h2>
+    {% if orders %}
+      <div class="row">
+        {% for o in orders %}
+          <div class="col-md-4">
+            <div class="glass-card">
+              <img src="data:image/png;base64,{{ o.image }}" 
+                   class="img-fluid rounded mb-3" alt="{{ o.food_name }}">
+              <h5 class="text-white">{{ o.food_name }}</h5>
+              <p>
+                <strong>Quantity:</strong> {{ prediction.quantity }} kg<br>
+                <strong>Ordered on:</strong> {{ prediction.date('%b %d, %Y') }}<br>
+                <strong>Status:</strong> {{ o.status }}
+              </p>
+              {% if o.status == 'Confirmed' %}
+                <form action="{{ url_for('cancel_order', order_id=o.order_id) }}" method="POST">
+                  <button type="submit" class="btn btn-sm btn-warning">Cancel</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center">You have no orders yet.</p>
+    {% endif %}
+  </div>
+
+  <footer class="text-center mt-5 text-white">
+    &copy; 2025 SurplusSmart
+  </footer>
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

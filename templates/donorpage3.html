@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SurplusSmart - Donor Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      background: url('/static/images/donor.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+    }
+    .container {
+      max-width: 1000px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0px 0px 15px rgb(0, 0, 0);
+      margin-top: 40px;
+    }
+    .form-control {
+      background: rgba(255, 255, 255, 0.69);
+      border: none;
+      border-radius: 10px;
+    }
+    .btn-custom {
+      background: #ff5e62;
+      border: none;
+      border-radius: 20px;
+      color: white;
+    }
+    .btn-custom:hover {
+      background: #ff9966;
+      color: white;
+    }
+    .nav-pills .nav-link.active {
+      background-color: #ff5e62;
+      color: white;
+    }
+    .preview-container img {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    }
+    .logout-btn {
+      background: #dc3545;
+      border: none;
+      padding: 6px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+    }
+    .logout-btn:hover {
+      background: #bb2d3b;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+ <!-- Navigation Tabs -->
+<ul class="nav nav-pills mb-4 d-flex justify-content-center gap-3 align-items-center">
+  <li class="nav-item"><a class="nav-link active" href="#" onclick="showTab('donateTab', event)">Donate</a></li>
+  <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('profileTab', event)">Profile</a></li>
+  <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('ordersTab', event)">Orders</a></li>
+  <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('donationsTab', event)">My Donations</a></li>
+  <li class="nav-item">
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </li>
+</ul>
+
+  <!-- Donate Tab -->
+  <div id="donateTab" class="tab-content active">
+    <h2 class="text-center text-dark">Donate Food</h2>
+    <form action="/predict" method="POST" enctype="multipart/form-data">
+      <div class="row">
+        <div class="col-md-6">
+          <label class="form-label fw-bold text-dark">Food Name</label>
+          <input type="text" name="name" class="form-control" required>
+
+          <label class="form-label fw-bold text-dark mt-2">Quantity (kg)</label>
+          <input type="number" name="quantity" class="form-control" required>
+
+          <label class="form-label fw-bold text-dark mt-2">Age Group</label>
+          <select name="age-group" class="form-control" required>
+            <option value="0-10"> Below 10 </option>
+            <option value="11-20">11-18 years</option>
+            <option value="11-20">19-40 years</option>
+            <option value="11-20">40+ years</option>
+            <option value="45+">All age groups</option>
+          </select>
+
+          <label class="form-label fw-bold text-dark mt-2">Date of Preparation</label>
+          <input type="datetime-local" name="date" class="form-control" required>
+
+          <label class="form-label fw-bold text-dark mt-2">Upload Image</label>
+          <input type="file" name="file" class="form-control" accept="image/*" onchange="previewImage(event)" required>
+
+          <button class="btn btn-custom mt-3 w-100">Add item</button>
+        </div>
+        <div class="col-md-6">
+          <div class="preview-container" id="imagePreviewContainer" style="display:none;">
+            <p class="text-dark mt-2 fw-bold">Image Preview:</p>
+            <img id="imagePreview" src="#" alt="Food Image">
+          </div>
+
+          {% if prediction_text %}
+            <div class="alert alert-success text-dark mt-3">
+              <h5>{{ prediction_text }}</h5>
+            </div>
+          {% endif %}
+          {% if nutrient_info %}
+            <div class="alert alert-info text-dark">
+              <p>{{ nutrient_info }}</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+
+ <!-- Orders Tab -->
+<div id="ordersTab" class="tab-content">
+  <h2 class="text-center text-dark">Orders Placed for Your Donations</h2>
+  
+  {% if orders %}
+    <div class="table-responsive mt-4">
+      <table class="table table-striped table-hover table-bordered bg-white text-dark rounded">
+        <thead class="table-dark">
+          <tr>
+            <th>Order ID</th>
+            <th>Receiver Name</th>
+            <th>Food Item</th>
+            <th>Quantity</th>
+            <th>Contact</th>
+            <th>Delivery Address</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+            <tr>
+              <td>{{ order.id }}</td>
+              <td>{{ order.receiver_name }}</td>
+              <td>{{ order.food_name }}</td>
+              <td>{{ order.quantity }} kg</td>
+              <td>{{ order.contact }}</td>
+              <td>{{ order.address }}</td>
+              <td>{{ order.date }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-center mt-4 text-dark fw-bold">No orders placed yet.</p>
+  {% endif %}
+</div>
+
+<!-- My Donations Tab -->
+<div id="donationsTab" class="tab-content">
+  <h2 class="text-center text-dark">Your Donation History</h2>
+  
+  {% if donations %}
+    <div class="table-responsive mt-4">
+      <table class="table table-striped table-hover table-bordered bg-white text-dark rounded">
+        <thead class="table-dark">
+          <tr>
+            <th>Donation ID</th>
+            <th>Food Name</th>
+            <th>Predicted Food</th>
+            <th>Quantity</th>
+            <th>Age Group</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in donations %}
+            <tr>
+              <td>{{ item.id }}</td>
+              <td>{{ item.food_name }}</td>
+              <td>{{ item.predicted_food }}</td>
+              <td>{{ item.quantity }} kg</td>
+              <td>{{ item.age_group }}</td>
+              <td>{{ item.date }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-center mt-4 text-dark fw-bold">You haven't made any donations yet.</p>
+  {% endif %}
+</div>
+
+
+
+  <!-- Profile Tab -->
+  <div id="profileTab" class="tab-content">
+    <h3 class="text-center text-dark">My Profile</h3>
+    <div class="mt-3 text-dark">
+      <p><strong>Name:</strong> {{ user.name }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Phone:</strong> {{ user.phone }}</p>
+      <p><strong>Address:</strong> {{ user.address }}</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showTab(tabId, event) {
+    event.preventDefault();
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    // Remove active class from all nav links
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+    // Show selected tab
+    document.getElementById(tabId).classList.add('active');
+    // Highlight selected nav link
+    event.target.classList.add('active');
+  }
+
+  function previewImage(event) {
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewImage = document.getElementById('imagePreview');
+    const file = event.target.files[0];
+
+    if(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewImage.src = e.target.result;
+        previewContainer.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      previewContainer.style.display = 'none';
+      previewImage.src = '#';
+    }
+  }
+
+  function logout() {
+    // Redirect or call logout endpoint
+    window.location.href = "/";
+  }
+</script>
+</body>
+</html>
