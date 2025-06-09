@@ -1,3 +1,4 @@
+python == 3.11
 Flask
 scikit-learn
 pandas
