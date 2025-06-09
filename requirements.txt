@@ -6,7 +6,6 @@ matplotlib
 gunicorn
 seaborn
 tensorflow
-matplotlib.pyplot
 os
 pickle
 io
